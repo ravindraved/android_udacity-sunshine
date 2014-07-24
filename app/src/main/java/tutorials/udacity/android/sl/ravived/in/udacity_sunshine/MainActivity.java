@@ -3,6 +3,7 @@ package tutorials.udacity.android.sl.ravived.in.udacity_sunshine;
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -10,6 +11,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class MainActivity extends Activity {
@@ -57,6 +64,40 @@ public class MainActivity extends Activity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+            //once view for the Fragment is created ..
+
+            String[] weatherForecastList = {
+
+                    "Today - Cloudy - 28/32",
+                    "Tomorrow - Drizzle - 27/33"
+
+            };
+
+            List<String> weekForecast = new ArrayList<String>(Arrays.asList(weatherForecastList));
+
+            Context context = getActivity().getApplicationContext();
+
+            ArrayAdapter<String> mForecastAdapter = new ArrayAdapter<String>(
+                    //current context
+                    getActivity(),
+                    // id of list item layout
+                    R.layout.list_item_forecast,
+                    //id of text view to populate layout
+                    R.id.list_item_forecast_textview,
+                    //Forecast Data
+                    weatherForecastList
+            );
+
+            ListView listView = (ListView) rootView.findViewById(
+                    R.id.listview_forecast);
+            listView.setAdapter(mForecastAdapter);
+
+
+
+
+
+
             return rootView;
         }
     }
