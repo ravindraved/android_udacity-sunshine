@@ -6,6 +6,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -38,13 +41,13 @@ public class ForecastFragment extends Fragment {
         String[] weatherForecastList = {
 
                 "Today - Cloudy - 28/32",
-                "Tomorrow - Drizzle - 27/33"
+                "Tomorrow - Drizzle - 27/33",
+                "Day After Tomorrow - Showering - 25/29"
 
         };
 
         List<String> weekForecast = new ArrayList<String>(Arrays.asList(weatherForecastList));
 
-        Context context = getActivity().getApplicationContext();
 
         ArrayAdapter<String> mForecastAdapter = new ArrayAdapter<String>(
                 //current context
@@ -62,10 +65,36 @@ public class ForecastFragment extends Fragment {
         listView.setAdapter(mForecastAdapter);
 
 
-        Log.d(ForecastFragment.class.getName(), "Weather Data Received" + weatherData);
+        Log.d(ForecastFragment.class.getName(), "Weather Data Received" + weekForecast);
 
 
         return rootView;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //Add this line in order for this fragment to handle menu events.
+        setHasOptionsMenu(true);
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.forcastfragment, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        //Handle action bar item clicks here. the action bar will automitically handle clicks
+        // on the home/up button, so long as you specify  a parent activity in AndroidManifest.xml
+        int id = item.getItemId();
+        if (id == R.id.action_refresh) {
+            new FetchWeatherTask().execute();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     public class FetchWeatherTask extends AsyncTask<Void, Void, Void> {
@@ -73,6 +102,7 @@ public class ForecastFragment extends Fragment {
 
         @Override
         protected Void doInBackground(Void... params) {
+            Log.d(LOG_TAG, "in background");
             String weatherData = getWeatherDataFromServer();
             return null;
         }
