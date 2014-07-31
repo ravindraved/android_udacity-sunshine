@@ -34,6 +34,7 @@ public class ForecastFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         //once view for the Fragment is created ..
@@ -159,6 +160,7 @@ public class ForecastFragment extends Fragment {
             }
 
             forecastJsonStr = stringBuffer.toString();
+            Log.v(LOG_TAG, "Forecast JSON String:" + forecastJsonStr.toString());
 
 
         } catch (Exception e) {
