@@ -11,8 +11,18 @@ import java.net.URL;
  */
 public class Test1 {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
+
+        // Calling JSON object in standalone mode does not work.. gives RuntimeException: Stub! .looks like it needs framework code.
+
+        String weatherJson = test1();
+        System.out.println(weatherJson);
+        WeatherDataParser.getMaxTemperatureForDay(weatherJson, 1);
+    }
+
+
+    public static String test1() {
         {
 
             // These two need to be declared outside the try/catch
@@ -37,27 +47,50 @@ public class Test1 {
                 urlConnection.setRequestMethod("GET");
                 urlConnection.connect();
 
+
                 // Read the input stream into a String
-                InputStream inputStream = null;
+                InputStream inputStream = urlConnection.getInputStream();
                 StringBuffer stringBuffer = new StringBuffer();
                 if (inputStream == null) {
                     //do nothing
                     forecastJsonStr = null;
-                    System.out.println("NullA!!");
+                    return null;
 
                 }
+
+
                 reader = new BufferedReader(new InputStreamReader(inputStream));
-                System.out.println("DONE!!!");
+                System.out.println("Done reading weather data...");
+
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
+                    // But it does make debugging a *lot* easier if you print out the completed
+                    // buffer for debugging.
+                    stringBuffer.append(line + "\n");
+                }
+
+                if (stringBuffer.length() == 0) {
+                    // Stream was empty.  No point in parsing.
+                    forecastJsonStr = null;
+                    return null;
+                }
+
+                forecastJsonStr = stringBuffer.toString();
+
+                return forecastJsonStr;
 
 
             } catch (Exception e) {
                 e.printStackTrace();
+                return null;
             } finally {
             }
 
 
         }
-
     }
+
 }
 

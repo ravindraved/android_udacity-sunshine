@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import org.json.JSONException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,6 +34,7 @@ public class ForecastFragment extends Fragment {
 
     private final static String LOG_TAG = FetchWeatherTask.class.getSimpleName();
     private static String weatherForecastFromWeb = null;
+    private ArrayAdapter<String> mForecastAdapter = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,7 +56,7 @@ public class ForecastFragment extends Fragment {
         List<String> weekForecast = new ArrayList<String>(Arrays.asList(weatherForecastList));
 
 
-        ArrayAdapter<String> mForecastAdapter = new ArrayAdapter<String>(
+        mForecastAdapter = new ArrayAdapter<String>(
                 //current context
                 getActivity(),
                 // id of list item layout
@@ -61,7 +64,7 @@ public class ForecastFragment extends Fragment {
                 //id of text view to populate layout
                 R.id.list_item_forecast_textview,
                 //Forecast Data
-                weatherForecastList
+                weekForecast
         );
 
         ListView listView = (ListView) rootView.findViewById(
@@ -102,11 +105,11 @@ public class ForecastFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    public class FetchWeatherTask extends AsyncTask<String, Void, Void> {
+    public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
 
 
         @Override
-        protected Void doInBackground(String... params) {
+        protected String[] doInBackground(String... params) {
             //Check if param is available..
             Log.d(LOG_TAG, "in doInBackground.." + params[0]);
             if (params.length == 0) {
@@ -139,6 +142,7 @@ public class ForecastFragment extends Fragment {
             URL url = null;
             try {
                 url = new URL(buildUri.toString());
+
             } catch (Exception e) {
                 Log.e(LOG_TAG, e.toString());
             } finally {
@@ -147,9 +151,32 @@ public class ForecastFragment extends Fragment {
 
 
             Log.d(LOG_TAG, "URI for weather forecast = " + url);
-            weatherForecastFromWeb = getWeatherDataFromServer(url);
+
+            try {
+                weatherForecastFromWeb = getWeatherDataFromServer(url);
+                Log.d(LOG_TAG, weatherForecastFromWeb);
+                String[] forecastString = new WeatherDataParser().getWeatherDataFromJson(weatherForecastFromWeb, numDays);
+                return forecastString;
+            } catch (JSONException e) {
+                Log.d(LOG_TAG, "Error fetching forecast data " + e.toString());
+                e.printStackTrace();
+            }
+
+
             //  String weatherData = getWeatherDataFromServer(url);
+
+
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(String[] result) {
+            if (result != null) {
+                mForecastAdapter.clear();
+                for (String dayForecast : result) {
+                    mForecastAdapter.add(dayForecast);
+                }
+            }
         }
     }
 
@@ -207,6 +234,8 @@ public class ForecastFragment extends Fragment {
             forecastJsonStr = stringBuffer.toString();
             Log.v(LOG_TAG, "Forecast JSON String:" + forecastJsonStr.toString());
 
+            return forecastJsonStr;
+
 
         } catch (Exception e) {
             Log.e("ForecastFragment", "Error ", e);
@@ -228,7 +257,6 @@ public class ForecastFragment extends Fragment {
         }
 
 
-        return null;
     }
 
 }
