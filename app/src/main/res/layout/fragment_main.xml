@@ -18,6 +18,11 @@
         android:id="@+id/textView" />
 
 
+    <!-- Note: the link between this list view and
+        list_item_forecast.xml is established using a
+        Adapter in ForecastFragment class. ForecastFragment
+        is the key class started by Main Activity.
+    -->
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
