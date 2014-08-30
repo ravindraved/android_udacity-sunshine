@@ -2,6 +2,7 @@ package tutorials.udacity.android.sl.ravived.in.udacity_sunshine;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -93,6 +94,9 @@ public class ForecastFragment extends Fragment {
 
                 Toast toast = Toast.makeText(context, text, duration);
                 toast.show();
+
+                Intent intent = new Intent(getActivity(), DetailActivity.class).putExtra(Intent.EXTRA_TEXT, forecastDataOfClickedItem);
+                startActivity(intent);
             }
         });
 

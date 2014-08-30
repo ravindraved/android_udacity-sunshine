@@ -7,5 +7,6 @@
     <string name="app_current_temp">21°</string>
     <string name="cloud_string">cloud string</string>
     <string name="app_refresh" transferable="false">Refresh</string>
+    <string name="title_activity_detail">DetailActivity</string>
 
 </resources>
