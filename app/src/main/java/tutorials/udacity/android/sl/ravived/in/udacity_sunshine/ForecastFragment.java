@@ -3,9 +3,11 @@ package tutorials.udacity.android.sl.ravived.in.udacity_sunshine;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -105,6 +107,17 @@ public class ForecastFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        //Call Forecast weather load .. to update weather data on app load !!
+        //TODO - Insert call to  getWeatherDataFromServer by froming URL based on Preferences
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        Log.d(LOG_TAG, "Prefs->" + prefs.getString("example_text", "sample123"));
+
+    }
+
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //Add this line in order for this fragment to handle menu events.
@@ -176,11 +189,16 @@ public class ForecastFragment extends Fragment {
             }
 
 
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            Log.d(LOG_TAG, "Prefs->" + prefs.getString("example_text", "sample123"));
+
             Log.d(LOG_TAG, "URI for weather forecast = " + url);
 
             try {
                 weatherForecastFromWeb = getWeatherDataFromServer(url);
                 Log.d(LOG_TAG, weatherForecastFromWeb);
+
+
                 String[] forecastString = new WeatherDataParser().getWeatherDataFromJson(weatherForecastFromWeb, numDays);
                 return forecastString;
             } catch (JSONException e) {

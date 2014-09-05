@@ -9,4 +9,14 @@
     <string name="app_refresh" transferable="false">Refresh</string>
     <string name="title_activity_detail">DetailActivity</string>
 
+
+    <!-- Label for the location preference [Char Limit = 30] -->
+    <string name="pref_location_label">Location</string>
+
+    <!-- Key name for storing location in SharedPreferences [Char Limit = none]-->
+    <string name="pref_location_key" translatable="false">location</string>
+
+    <!-- Default postal code for location preferences [Char limit = none]-->
+    <string name="pref_location_default" translatable="false">94043</string>
+
 </resources>
