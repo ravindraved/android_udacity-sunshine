@@ -8,6 +8,7 @@
     <string name="cloud_string">cloud string</string>
     <string name="app_refresh" transferable="false">Refresh</string>
     <string name="title_activity_detail">DetailActivity</string>
+    <string name="action_map">Map Location</string>
 
 
     <!-- Label for the location preference [Char Limit = 30] -->

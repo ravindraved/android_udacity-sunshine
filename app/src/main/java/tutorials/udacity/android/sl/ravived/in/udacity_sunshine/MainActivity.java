@@ -5,7 +5,10 @@ import android.app.ActionBar;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,6 +32,9 @@ import java.util.List;
 
 
 public class MainActivity extends Activity {
+
+
+    private final static String LOG_TAG = MainActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +65,42 @@ public class MainActivity extends Activity {
             startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
+
+        if (id == R.id.action_map) {
+            openPreferredLocationMap();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void openPreferredLocationMap() {
+
+        //Get prefered location..
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getBaseContext());
+        String location = prefs.getString("example_text", "Mumbai India");
+        Log.d(LOG_TAG, "Prefs->" + location);
+
+
+        // Using the URI Scheme for showing the location found on settings
+        //intent is invoked by -> create view intent, indicating its location in data URI
+        //URI syntax form http://developer.android.com/guide/components/intent
+
+        Uri geoLocation = Uri.parse("geo:0,0?").buildUpon().appendQueryParameter("q", location).build();
+
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(geoLocation);
+
+        //Finally we start an activity with its intent.
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        } else {
+            Log.d(LOG_TAG, "Coudn't call " + location + ", no app found");
+        }
+
+
+
+
     }
 
 
